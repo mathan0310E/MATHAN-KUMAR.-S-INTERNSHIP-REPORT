@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en" class="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!--
+      Security hardening.
+
+      The Content-Security-Policy is injected at build time by a small Vite
+      plugin (see vite.config.ts) rather than written here, because the dev
+      server needs to inject its own inline module preamble and would be blocked
+      by a strict policy. In production the same policy is also served as a real
+      HTTP header via `public/_headers` and `vercel.json` — a header is
+      authoritative, whereas `frame-ancestors` is ignored in a meta tag.
+
+      In short: no remote origins, no frames, no plugins, no inline script.
+    -->
+    <meta name="referrer" content="strict-origin-when-cross-origin" />
+    <meta name="color-scheme" content="dark" />
+    <meta name="theme-color" content="#0b0d12" />
+    <meta name="format-detection" content="telephone=no" />
+
+    <title>Auto Health Checker — Mathan Kumar. S | Cyber Wolf Internship</title>
+    <meta
+      name="description"
+      content="Internship presentation by Mathan Kumar. S (B.Tech AI & Data Science, S.K.P Engineering College): Auto Health Checker, an automated website health, security and quality analysis platform. Cyber Wolf internship."
+    />
+    <meta name="author" content="Mathan Kumar. S" />
+    <meta name="robots" content="index, follow" />
+
+    <meta property="og:type" content="website" />
+    <meta
+      property="og:title"
+      content="Auto Health Checker — Mathan Kumar. S | Cyber Wolf Internship"
+    />
+    <meta
+      property="og:description"
+      content="Automated website health, security and quality analysis. Internship presentation for Cyber Wolf."
+    />
+    <meta property="og:image" content="/assets/brand/cyberwolf-512.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <link rel="icon" href="/assets/brand/favicon-32.png" sizes="32x32" type="image/png" />
+    <link rel="apple-touch-icon" href="/assets/brand/apple-touch-icon.png" />
+    <link
+      rel="preload"
+      href="/assets/fonts/host-grotesk-latin.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

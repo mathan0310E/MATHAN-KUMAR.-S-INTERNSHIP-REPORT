@@ -1,0 +1,207 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ── Self-hosted brand font. No third-party requests. ─────────────────────── */
+@font-face {
+  font-family: 'Host Grotesk';
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url('/assets/fonts/host-grotesk-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA,
+    U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193,
+    U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'Host Grotesk';
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url('/assets/fonts/host-grotesk-latin-ext.woff2') format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF,
+    U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020,
+    U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+@layer base {
+  :root {
+    color-scheme: dark;
+    --topbar-h: 64px;
+  }
+
+  @media (max-width: 720px) {
+    :root {
+      --topbar-h: 56px;
+    }
+  }
+
+  * {
+    @apply border-white/[0.075];
+  }
+
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    @apply bg-bg font-sans text-ink antialiased;
+    margin: 0;
+    overflow-x: hidden;
+    font-synthesis-weight: none;
+    text-rendering: optimizeLegibility;
+  }
+
+  ::selection {
+    background: rgba(255, 45, 45, 0.3);
+    color: #fff;
+  }
+
+  /* ── Presentation mode ───────────────────────────────────────────────────
+     Hides the chrome and pins every slide to exactly one viewport so the deck
+     behaves like a real slideshow. Content that would overflow scrolls inside
+     the slide rather than pushing the layout. */
+  body.is-presenting {
+    scroll-snap-type: y mandatory;
+  }
+
+  body.is-presenting .topbar {
+    display: none;
+  }
+
+  body.is-presenting .slide {
+    height: 100svh;
+    min-height: 100svh;
+    padding-top: 3rem;
+    scroll-snap-align: start;
+    scroll-snap-stop: always;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+
+  body.is-presenting .site-footer {
+    display: none;
+  }
+
+  body.is-presenting .rail {
+    display: none;
+  }
+
+  /* One visible focus treatment for every interactive element. */
+  :focus-visible {
+    @apply outline-none ring-2 ring-brand ring-offset-2 ring-offset-bg;
+  }
+
+  kbd {
+    @apply rounded border border-white/15 bg-surface-2 px-1.5 py-0.5 font-mono text-[0.78em] text-ink;
+  }
+
+  code {
+    @apply font-mono text-[0.9em] text-ink-muted;
+  }
+}
+
+@layer components {
+  /* The shared section shell: every slide is a full viewport with one idea. */
+  .slide {
+    @apply relative flex min-h-[100svh] flex-col justify-center;
+    padding-top: calc(var(--topbar-h) + 3rem);
+    padding-bottom: 3rem;
+    scroll-margin-top: var(--topbar-h);
+  }
+
+  .wrap {
+    @apply mx-auto w-full max-w-wrap px-6 md:px-8;
+  }
+
+  /* The alignment anchor for every section heading. */
+  .shead {
+    @apply mb-8 grid grid-cols-1 gap-2 md:mb-12 md:grid-cols-[56px_1fr] md:gap-6;
+  }
+
+  .eyebrow {
+    @apply mb-3 flex items-center gap-2 font-mono text-[10.5px] uppercase tracking-[0.2em] text-ink-dim;
+  }
+
+  .minor-head {
+    @apply mb-4 mt-8 border-b border-white/[0.075] pb-3 text-base font-semibold tracking-tight text-ink md:mt-12 md:text-lg;
+  }
+
+  .prose-lead {
+    @apply mb-4 max-w-[76ch] text-[15px] leading-relaxed text-ink-muted md:text-base;
+  }
+
+  .srcnote {
+    @apply mt-3 text-xs text-ink-dim;
+  }
+
+  /* Placeholders render in amber so an unsupplied detail is impossible to miss. */
+  .ph {
+    @apply inline-block rounded border border-dashed border-warn/45 bg-warn/10 px-1.5 font-mono text-[0.9em] text-[#ffc46b];
+  }
+
+  /* Thin card used across pillars, modules, tech and skills. */
+  .card {
+    @apply rounded-xl2 border border-white/[0.075] bg-surface transition-colors duration-200;
+  }
+
+  .card-hover {
+    @apply hover:border-white/[0.14] hover:bg-surface-2;
+  }
+
+  /* Bulleted evidence lists. */
+  .ticks {
+    @apply grid gap-1.5;
+  }
+
+  .ticks li {
+    @apply relative pl-4 text-[13px] leading-snug text-ink-dim;
+  }
+
+  .ticks li::before {
+    content: '';
+    @apply absolute left-0 top-[0.55em] h-[5px] w-[5px] rounded-[1px] bg-brand/70;
+  }
+
+  .term-line-ok {
+    @apply text-ok;
+  }
+  .term-line-warn {
+    @apply text-warn;
+  }
+  .term-line-ai {
+    @apply text-info;
+  }
+  .term-line-cmd {
+    @apply text-ink;
+  }
+}
+
+@layer utilities {
+  /* Reduced-motion users get the end state immediately, never a blank slide. */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.001ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.001ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+
+  @media print {
+    .no-print {
+      display: none !important;
+    }
+    body {
+      background: #fff;
+      color: #000;
+    }
+    .slide {
+      min-height: auto;
+      page-break-after: always;
+      padding: 24px 0;
+    }
+  }
+}

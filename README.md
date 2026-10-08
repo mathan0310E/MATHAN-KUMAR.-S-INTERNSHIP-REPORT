@@ -1,170 +1,145 @@
 # Auto Health Checker — Internship Presentation
 
-An interactive, cinematic 10-section internship presentation for **Mathan Kumar. S**
+An interactive, cinematic internship presentation for **Mathan Kumar. S**
 (Cyber Wolf internship, project: *Auto Health Checker*).
 
-It is a static site — no build step, no dependencies, no framework. Open `index.html`
-and it runs.
+The deck is twelve full-viewport sections that behave like slides: a hero, ten
+numbered sections covering the organisation, the project, the architecture and
+the outcomes, then a certificate and a closing slide. It is built to be driven
+from a projector, a laptop, a tablet or a phone.
 
 ---
 
 ## Run it
 
-Any static server works. From this folder:
+```bash
+npm install
+npm run dev          # http://localhost:12000/
+```
+
+Build and serve the production bundle:
 
 ```bash
-python3 -m http.server 12000
+npm run build
+npm run preview      # http://localhost:12000/
 ```
 
-Then open <http://localhost:12000/>.
-
-Opening `index.html` directly from the filesystem also works, except the
-**DOWNLOAD** button (browsers block `fetch()` on `file://`). Use the server if you
-want to produce the offline copy.
-
----
-
-## Files
-
-| File | What it is |
-|---|---|
-| `index.html` | Structure: hero, sections 01–10, thank-you, modals |
-| `styles.css` | The whole design system (tokens, layout, animation, responsive, a11y) |
-| `content.js` | **Everything editable** — student, internship, project, company, tech stack, sounds |
-| `audio.js` | Sound engine (synthesised transitions + support for your own audio files) |
-| `app.js` | Navigation, scroll snapping, reveals, counters, canvas FX, demo scan, export |
-| `assets/brand/` | Cyber Wolf logo variants, certificate image, favicon |
-
----
-
-## Fill in the placeholders
-
-Four details were never supplied, so they render as visible amber placeholders.
-Open **`content.js`** and replace the bracketed values under `internship`:
-
-```js
-internship: {
-  role:      '[INTERNSHIP ROLE]',
-  duration:  '[INTERNSHIP DURATION]',
-  mentor:    '[MENTOR NAME]',
-  startDate: '[INTERNSHIP START DATE]',
-  endDate:   '[INTERNSHIP END DATE]',
-  ...
-}
-```
-
-They appear in **Section 02 → INTERNSHIP EXPERIENCE**. The same values feed the
-`[BRACKETS]` styling automatically, so nothing else needs touching.
-
-### Already verified — leave as is unless reissued
-
-These come from the issued certificate and the official Cyber Wolf website:
-
-| Field | Value | Source |
-|---|---|---|
-| Student | Mathan Kumar. S | certificate + brief |
-| Register No | 2194945281505 | certificate |
-| Internship title | Ethical Hacking (Offline) | certificate |
-| Period | 01/09/2026 – 01/10/2026 | certificate |
-| Certificate No | CW20267990067144 | certificate |
-| Signatory | Tamilselvan S, Founder & CEO | certificate |
-| Company figures | 12,400+ / 180+ / 120+ / 24×7 | cyberwolf360.in |
-
-Nothing outside those sources is claimed anywhere in the deck.
+The production build injects a strict Content-Security-Policy meta tag, and
+`public/_headers` / `vercel.json` serve the same policy (plus `frame-ancestors`,
+which browsers ignore in a meta tag) as real HTTP headers.
 
 ---
 
 ## Presenting
 
-| Action | Keys |
+| Action | Control |
 |---|---|
-| Next / previous section | `↓` `↑` `PageDown` `PageUp` `←` `→` `Space` |
-| First / last section | `Home` `End` |
-| Toggle presentation mode | `P` |
-| Exit presentation mode | `Esc` |
-| Run demo scan | the **RUN DEMO SCAN** button |
+| Next / previous slide | `↓` `↑`, `Page Down` / `Page Up`, mouse wheel, touch swipe |
+| Jump to a slide | Click any entry in the left rail |
+| First / last slide | `Home` / `End` |
+| Presentation mode | The **Present** button, or `p` |
+| Leave presentation mode | `Esc` |
+| Mute the transition tones | The sound button in the top bar |
 
-Mouse wheel and touch swipe also move between sections. On sections taller than
-the screen, normal scrolling happens first and the snap takes over at the edge.
-
-**PRESENTATION MODE** hides the site chrome, goes full screen, and keeps one
-section per viewport with a progress bar.
-
-**DOWNLOAD** writes a single self-contained `Auto-Health-Checker-Presentation.html`
-(~2.4 MB) with the CSS, JS, logo and certificate inlined. That file opens offline
-with no server and no asset folder — good for handing to an examiner.
+Presentation mode hides the top bar and the rail, pins each slide to exactly one
+viewport, and keeps the keyboard controls. Motion is reduced automatically when
+the operating system asks for it.
 
 ---
 
-## Sound
+## Editing the content
 
-Section transitions have sound **already working out of the box** — the
-transitions are synthesised in the browser with the Web Audio API, so no audio
-files are needed. Each section gets its own tone, dropping in pitch as the deck
-progresses.
+Everything the deck displays lives in `src/data/content.ts` — student details,
+the project copy, objectives, architecture nodes, challenges, skills, the demo
+scan transcript and the sound configuration. Editing that one file is enough to
+update the presentation; no component changes are needed.
 
-Sound never starts before a user interaction (browser autoplay rules). The
-speaker button in the top bar toggles it, and the choice is remembered.
+### Placeholders
 
-### Use your own transition sounds
+Five values are intentionally left as placeholders because they were not
+supplied. They render as visibly marked chips rather than invented text:
 
-Drop files into `assets/sfx/` and map them in `content.js`:
+`[INTERNSHIP ROLE]`, `[INTERNSHIP DURATION]`, `[INTERNSHIP START DATE]`,
+`[INTERNSHIP END DATE]`, `[MENTOR NAME]`
 
-```js
-sound: {
-  enabled: true,
-  volume: 0.5,
-  transitionMode: 'synth',      // fallback for unmapped sections
-  perSection: {
-    s10: { mode: 'file', src: 'assets/sfx/transition-certificate.mp3' },
-    hero: { mode: 'file', src: 'assets/sfx/transition-hero.mp3' },
-  },
-  ui: { click: true, hover: false, complete: true },
-}
+Replace them in `src/data/content.ts` when you have the details.
+
+### Company figures
+
+`orgStats` holds only the three headline numbers Cyber Wolf publishes on
+cyberwolf360.in — 12,400+ vulnerabilities found, 180+ enterprises secured and
+99.99% SOC uptime. No other statistic is shown, because an unsourced figure on a
+company slide is worse than no figure at all.
+
+---
+
+## Sound effects
+
+The deck ships with a synthesised transition tone for every section, so it has
+working sound without a single audio file. To use your own sounds, drop files
+into `public/assets/sfx/` and map them in the `sound.perSection` block of
+`src/data/content.ts`:
+
+```ts
+perSection: {
+  s5: { mode: 'file', src: 'assets/sfx/transition-project.mp3' },
+},
 ```
 
-Any section without a `perSection` entry keeps using the generated sound, so you
-can swap sounds in one at a time. See `assets/sfx/README.md` for conventions.
-
-Other knobs: `volume` (0–1), `ui.hover` (subtle hover blips, off by default
-because it can get noisy), `ui.complete` (the flourish when a demo scan finishes).
+Unmapped sections keep their generated tone, so you can swap them in one at a
+time. Browsers block audio until the visitor interacts, so the audio context
+unlocks on the first click, key press or touch.
 
 ---
 
-## Editing content
+## Verifying changes
 
-`content.js` holds the text and numbers. A few useful entries:
+Three browser-driven harnesses check the deck against a running server. They
+need Playwright's Chromium once: `npx playwright install chromium`.
 
-- `project.subscores` — the five dashboard bars and their values
-- `project.severity` — the CRITICAL/HIGH/MEDIUM/LOW counts
-- `project.scan.counters` — the scan-panel numbers
-- `project.healthScore` — drives the hero ring, the demo scan and the modal
-- `TECH_STACK` — the technology cards in Section 04
-- `arch` — the purpose / input / output / technology text for all 16 architecture nodes
-- `company.capabilities` — the capability map nodes and their hover text
-- `demoScan` / `demoStages` — the terminal output and the stage lines
-- `boot` — the preloader lines
+```bash
+npm run dev            # in one terminal
+npm run check          # in another
+```
 
-The demo scan is a **visual demonstration only**. It reads text from `content.js`
-and animates it. It never contacts, scans or attacks any website.
+| Command | What it checks |
+|---|---|
+| `npm run verify` | Structure, navigation, presentation mode, the demo scan, the charts, reduced motion, console cleanliness, and horizontal overflow at four viewport sizes |
+| `npm run audit` | Clipped text, overlapping text, WCAG AA contrast, and tap-target sizes |
+| `npm run assets` | The brand font loading, the logo and certificate decoding, alt text, and failed requests |
+| `npm run content` | Prints the rendered text of every slide, for reading the deck end to end |
 
----
+Point any of them at a different build with `BASE_URL`:
 
-## Deploying
-
-The whole thing is static. Upload the folder to any host — GitHub Pages, Netlify,
-Vercel, Cloudflare Pages, or a college web directory. Keep the folder structure so
-`assets/brand/` stays alongside `index.html`.
+```bash
+BASE_URL=http://localhost:12001/ npm run check
+```
 
 ---
 
-## Accessibility & performance notes
+## Project layout
 
-- Full keyboard navigation with visible focus rings on every control
-- Semantic landmarks, labelled sections, alt text on every image
-- `prefers-reduced-motion` is respected: animations stop, content renders
-  immediately, counters show final values
-- Canvas animation pauses when the tab is hidden or the section is off screen
-- The certificate image is lazy-loaded and blur-up (a 651-byte placeholder first)
-- No third-party JavaScript; the only external request is Google Fonts, and the
-  downloaded offline copy drops even that
+```
+src/
+  data/content.ts        All editable text, numbers and configuration
+  lib/                   Class-name helper, number formatting, sound engine
+  hooks/                 Media queries, reveal-on-scroll, count-up, section
+                         navigation, audio unlock, card tilt
+  components/ui/         Button, Card, micro-label primitives
+  components/layout/     Top bar, left rail, section headings
+  components/demo/       Health ring, scan terminal, demo scan dialog,
+                         findings dashboard (Recharts, lazy-loaded)
+  components/sections/   The twelve slides
+scripts/                 Browser-driven verification harnesses
+public/
+  assets/brand/          Cyber Wolf logo, certificate, favicons
+  assets/fonts/          Self-hosted Host Grotesk
+  assets/sfx/            Drop-in point for transition sounds
+```
+
+## Stack
+
+Vite, React, TypeScript, Tailwind CSS, Framer Motion for transitions, and
+Recharts for the findings dashboard (loaded on demand, so it stays out of the
+initial bundle). Fonts are self-hosted, so the deck renders identically with no
+network access.
